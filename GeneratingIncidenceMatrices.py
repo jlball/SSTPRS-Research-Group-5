@@ -1,3 +1,4 @@
+#Importing numpy
 import numpy as np
 
 #loading the .txt file with all of the L matrices for 96 of the 36,864 adinkras
