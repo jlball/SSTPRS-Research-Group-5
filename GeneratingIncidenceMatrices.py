@@ -1,5 +1,6 @@
 #Importing numpy
 import numpy as np
+import pprint as pp
 
 #loading the .txt file with all of the L matrices for 96 of the 36,864 adinkras
 file = np.loadtxt("small_library.txt", dtype=np.int8)
@@ -19,7 +20,7 @@ for y in range(0, 96):
     listOfL = []
     for x in range(0, 4):
         j = x * 4 + y * 16
-        listOfL.append(np.transpose(np.absolute(gLMat(file[j], file[j + 1], file[j + 2], file[j + 3]))))
+        listOfL.append(np.transpose(- np.absolute(gLMat(file[j], file[j + 1], file[j + 2], file[j + 3]))))
     AllL.append(listOfL)
 #AllL is a python list of python lists, which are each four element lists of numpy 4x4 arrays, which are the individual L matrices
 #So AllL is the list of all sets of four L matrices for each adinkra
@@ -36,6 +37,7 @@ for x in range(0, 96):
     LmatrixPart = np.concatenate((AllL[x][0], AllL[x][1], AllL[x][2], AllL[x][3]), 1)
     AllIncidence.append(np.concatenate((bigIdentity, LmatrixPart), 0))
 
+pp.pprint(AllIncidence[1])
     
 
 
