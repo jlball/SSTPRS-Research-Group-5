@@ -10,6 +10,20 @@ def gLMat(line1, line2, line3, line4):
     matrix = np.array([line1, line2, line3, line4])
     return matrix
 
+
+def liftBosons (inputMatrix, bosons):
+    VIMatrix = inputMatrix
+    for z in range(0, 4):
+        #print("Boson #: " + str(bosons[z]))
+        if bosons[z] == 1:
+            #print("Lifted")
+            for x in range(0, 16):
+                if inputMatrix[z, x] == 1:
+                    for y in range(0, 8):
+                        VIMatrix[y, x] = - inputMatrix[y, x]
+    return VIMatrix;
+        
+
 #initialization of the AllL and listOfL matrices for use in the populating of AllL
 listOfL = []
 AllL = []
@@ -25,20 +39,43 @@ for y in range(0, 96):
 #AllL is a python list of python lists, which are each four element lists of numpy 4x4 arrays, which are the individual L matrices
 #So AllL is the list of all sets of four L matrices for each adinkra
 
-#generating a 4x16 matrix, which is a concatenation of 4x4 identity matrices, which will become the top four rows of the 
+#generating a 4x16 matrix, which is a concatenation of 4x4 identity matrices, which will become the top four rows of the vertex edge matrix
 identity = np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]], dtype = np.int8)
 bigIdentity = np.concatenate((identity, identity, identity, identity), 1)
 
-#Initializing the list which will contain all incidence matrices
-AllIncidence = []
+#Initializing the list which will contain all incidence matrices for valise adinkras
+AllValiseIncidence = []
 
 #Generating all incidence matrices by concatenating the bigIdentity and the transpose abs value of the L matrices 
 for x in range(0, 96):
-    LmatrixPart = np.concatenate((AllL[x][0], AllL[x][1], AllL[x][2], AllL[x][3]), 1)
-    AllIncidence.append(np.concatenate((bigIdentity, LmatrixPart), 0))
+    LmatrixPart = np.concatenate((AllL[x][0], AllL[x][1], AllL[x][2], AllL[x][3]), 1, )
+    AllValiseIncidence.append(np.concatenate((bigIdentity, LmatrixPart), 0))
 
-pp.pprint(AllIncidence[1])
-    
+#Creating an array which contains all 16 possible raising / lowering combination of Bosons for use in the liftBosons fucntion
+allBosonConfigs = np.array([[0, 0, 0, 0],
+                                   [1, 0, 0, 0],
+                                   [0, 1, 0, 0],
+                                   [0, 0, 1, 0],
+                                   [0, 0, 0, 1],
+                                   [1, 1, 0, 0],
+                                   [1, 0, 1, 0],
+                                   [1, 0, 0, 1],
+                                   [0, 1, 0, 1],
+                                   [0, 0, 1, 1],
+                                   [0, 1, 1, 0],
+                                   [1, 1, 1, 0],
+                                   [1, 0, 1, 1],
+                                   [1, 1, 0, 1],
+                                   [0, 1, 1, 1],
+                                   [1, 1, 1, 1]
+                                   ], dtype=np.int8)
 
+AllVI = AllValiseIncidence
+allV = []
 
+pp.pprint(AllValiseIncidence[0])
+allV.append(liftBosons(AllValiseIncidence[0], allBosonConfigs[0]))
+pp.pprint(AllValiseIncidence[0])
+pp.pprint(allV)
 
+   
