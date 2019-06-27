@@ -95,17 +95,21 @@ pp.pprint(AllValiseIncidence[0])
 #     allV = []
 #     allV.append(liftBosons(AllValiseIncidence[0], allBosonConfigs[i]))
 #     pp.pprint(allV)
-for i in range (0, 16):
-    allV = []
-    allV.append(liftBosons(AllVI[0], allBosonConfigs[i]))
-    pp.pprint(allV)
-    print("")
+counter = 0
+for j in range (0, 96):
+    for i in range (0, 16):
+        allV = []
+        allV.append(liftBosons(AllVI[j], allBosonConfigs[i]))
+        pp.pprint(allV)
+        print("")
+        counter += 1
 # allV.append(liftBosons(AllValiseIncidence[0], allBosonConfigs[6]))
 #allV.append(liftBosons(AllValiseIncidence[0], allBosonConfigs[2]))
 pp.pprint(AllValiseIncidence[0])
 pp.pprint(allV)
 print("")
 print("")
+print(counter)
 
 
 #Hmm very interesting
