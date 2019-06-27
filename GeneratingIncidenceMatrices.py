@@ -74,8 +74,9 @@ AllVI = AllValiseIncidence
 allV = []
 
 pp.pprint(AllValiseIncidence[0])
-allV.append(liftBosons(AllValiseIncidence[0], allBosonConfigs[0]))
+allV.append(liftBosons(AllValiseIncidence[0], allBosonConfigs[15]))
 pp.pprint(AllValiseIncidence[0])
 pp.pprint(allV)
 
    
+#Hmm very interesting
