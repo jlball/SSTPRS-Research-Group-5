@@ -1,6 +1,7 @@
 #Importing numpy
 import numpy as np
 import pprint as pp
+import copy
 
 #loading the .txt file with all of the L matrices for 96 of the 36,864 adinkras
 file = np.loadtxt("small_library.txt", dtype=np.int8)
@@ -24,7 +25,7 @@ def gLMat(line1, line2, line3, line4):
 #     return VIMatrix;
 
 def liftBosons (inputMatrix, bosons):
-    # VIMatrix = inputMatrix
+    VIMatrix = copy.deepcopy(inputMatrix) #Thanks Lawson for fixing this
     for z in range(0, 4):
         #print("Boson #: " + str(bosons[z]))
         if bosons[z] == 1:
@@ -32,8 +33,8 @@ def liftBosons (inputMatrix, bosons):
             for x in range(0, 16):
                 if z == x%4:
                     for y in range(0, 8):
-                        inputMatrix[y, x] = - inputMatrix[y, x]
-    return inputMatrix;
+                        VIMatrix[y, x] = - inputMatrix[y, x]
+    return VIMatrix
 
 
 #initialization of the AllL and listOfL matrices for use in the populating of AllL
