@@ -90,26 +90,35 @@ allV = []
 print("")
 print("")
 print("")
-pp.pprint(AllValiseIncidence[0])
+# pp.pprint(AllValiseIncidence[0])
 # for i in range (0, 16):
 #     allV = []
 #     allV.append(liftBosons(AllValiseIncidence[0], allBosonConfigs[i]))
 #     pp.pprint(allV)
-counter = 0
+# counter = 0
 for j in range (0, 96):
     for i in range (0, 16):
-        allV = []
+        # allV = []
         allV.append(liftBosons(AllVI[j], allBosonConfigs[i]))
-        pp.pprint(allV)
-        print("")
-        counter += 1
+        # pp.pprint(allV)
+        # print("")
+        # counter += 1
 # allV.append(liftBosons(AllValiseIncidence[0], allBosonConfigs[6]))
 #allV.append(liftBosons(AllValiseIncidence[0], allBosonConfigs[2]))
-pp.pprint(AllValiseIncidence[0])
-pp.pprint(allV)
+# pp.pprint(AllValiseIncidence[0])
+# pp.pprint(allV)
+TwoDAllV = allV[0]
+for x in range (1, 96):
+    TwoDAllV = np.concatenate((TwoDAllV, allV[x]), 0)
+
+
+# array = ['a', 'b', 'c', 'd', 'e']
+
+# np.savetxt('ArRaY', array, fmt='%s')
+np.savetxt('1536_Matrices10', TwoDAllV, fmt='%s', delimiter=', ', newline='\n')
 print("")
 print("")
-print(counter)
+# print(counter)
 
 
 #Hmm very interesting
