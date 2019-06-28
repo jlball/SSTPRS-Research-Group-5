@@ -5,13 +5,15 @@ import copy
 
 #####
 #
-#   This program generates a text file containing all possible vertex edge matrices for the 96 Adinkras from the "small_library.txt" 
+#   This program generates a text file containing all possible vertex edge matrices for the 36,864 Adinkras from the "adinkra_dict_yangrui.txt" 
 #
 #####
 
+#Decide how bold you want to be. The number of Adinkras for which to calculate the 16 vertex edge matrices
+numOfAdnk = 36864
 
 #loading the .txt file with all of the L matrices for 96 of the 36,864 adinkras
-file = np.loadtxt("small_library.txt", dtype=np.int8)
+file = np.loadtxt("adinkra_dict_yangrui.txt", dtype=np.int8)
 
 #A function which takes the set of 1x4 numpy arrays of the text file and compiles them into a numpy 4x4 arry
 def gLMat(line1, line2, line3, line4):
@@ -36,7 +38,7 @@ AllL = []
 
 #helper variable to handle the index formula correctly
 j = 0
-for y in range(0, 96):
+for y in range(0, numOfAdnk):
     listOfL = []
     for x in range(0, 4):
         j = x * 4 + y * 16
@@ -53,7 +55,7 @@ bigIdentity = np.concatenate((identity, identity, identity, identity), 1)
 AllValiseIncidence = []
 
 #Generating all incidence matrices by concatenating the bigIdentity and the transpose abs value of the L matrices
-for x in range(0, 96):
+for x in range(0, numOfAdnk):
     LmatrixPart = np.concatenate((AllL[x][0], AllL[x][1], AllL[x][2], AllL[x][3]), 1, )
     AllValiseIncidence.append(np.concatenate((bigIdentity, LmatrixPart), 0))
 
@@ -80,7 +82,7 @@ allBosonConfigs = np.array([[0, 0, 0, 0],
 allIncidence = []
 
 #populating allIncidence using the liftBoson function and iterating through the allBosonConfigs list for each valise vertex edge matrix
-for j in range (0, 96):
+for j in range (0, numOfAdnk):
     for i in range (0, 16):
         allIncidence.append(liftBosons(AllValiseIncidence[j], allBosonConfigs[i]))
 
@@ -92,4 +94,4 @@ for x in range (1, len(allIncidence)):
 print(len(allIncidence))
 
 #exporting the final 2D array of all vertex edge matrices
-np.savetxt('1536_Matrices.txt', TwoDIncidence, fmt='%s', delimiter=', ', newline='\n')
+np.savetxt('Vertex_Edge_Matrices.txt', TwoDIncidence, fmt='%s', delimiter=', ', newline='\n')
