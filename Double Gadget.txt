@@ -1,0 +1,117 @@
+#Importing numpy
+import numpy as np
+import copy
+import pprint as pp
+import matplotlib.pyplot as plt
+from itertools import chain
+import math
+
+#The first NUM adinkras will be used in the following calculations (NUM^2 gadget values) 
+NUM = 100
+
+#initialization of the lists which will hold adinkras
+AdinkraA = []
+AdinkraB = []
+
+#j will be the position of Adinkra A, and k will be the position of Adinkra B 
+j = 0
+k = 0
+
+#initialization of histogram varibles
+oneminusthird = 0
+onezero = 0
+onethird = 0
+oneone = 0
+thirdminusthird = 0
+thirdzero = 0
+thirdthird = 0
+thirdone = 0
+zerominusthird = 0
+zerozero = 0
+zerothird = 0
+zeroone = 0
+
+#the tolerance for binning
+b = 0.001
+
+#loading the .txt file with all of the L matrices for 96 of the 36,864 adinkras
+dt = np.dtype('i8') 
+file = np.loadtxt("Anaconda3/Untitled Folder/adinkra_dict_yangrui.txt", dtype=dt)
+
+#A function which takes the set of 1x4 numpy arrays of the text file and compiles them into a numpy 4x4 array
+def gLMat(line1, line2, line3, line4):
+    matrix = np.array([line1, line2, line3, line4])
+    return matrix
+
+#The graph gadget
+def GraphGadg(AdinkraA, AdinkraB):
+    t = 0
+    for w in range(4):
+            for x in range(w + 1, 4):
+                
+                left = np.matmul(np.abs(np.transpose(AdinkraA[w])),np.abs(AdinkraA[x]))
+                right = np.matmul(np.abs(np.transpose(AdinkraB[w])),np.abs(AdinkraB[x]))
+                t += np.matrix.trace(np.matmul(left,right))
+                
+    gadg = (1/24)*t
+    return gadg
+
+#The regular gadget
+def RegGadg(AdinkraA, AdinkraB):
+    t = 0 
+    for w in range(4):
+            for x in range(w + 1, 4):
+                
+                VtA = (np.matmul(np.transpose(AdinkraA[w]),AdinkraA[x]) - np.matmul(np.transpose(AdinkraA[x]),AdinkraA[w]))
+                VtB = (np.matmul(np.transpose(AdinkraB[w]),AdinkraB[x]) - np.matmul(np.transpose(AdinkraB[x]),AdinkraB[w]))
+                t += np.matrix.trace(np.matmul(VtA,VtB))
+                
+    gadg = (-1/96)*t
+    return gadg
+
+#the master loop
+for y in range(0, NUM):
+    AdinkraA = [] 
+    for x in range(0, 4):
+        j = x * 4 + y * 16
+        AdinkraA.append(np.transpose(gLMat(file[j], file[j + 1], file[j + 2], file[j + 3]))) #fills AdinkraA with the xth L matrix from the yth adinkra
+    for z in range(0, NUM):
+        AdinkraB = []
+        for x in range(0, 4):
+            k = x * 4 + z * 16
+            AdinkraB.append(np.transpose(gLMat(file[k], file[k + 1], file[k + 2], file[k + 3]))) #fills AdinkraB with the xth L matrix from the zth adinkra
+        #now that we have two complete adinkras, we calculate both gadget values 
+        R = RegGadg(AdinkraA, AdinkraB)
+        G = GraphGadg(AdinkraA, AdinkraB)
+        #manual binning
+        if math.isclose(G, 1, rel_tol=b) and math.isclose(R, -0.3333333333333333, rel_tol=b):
+            oneminusthird += 1
+        elif math.isclose(G, 1, rel_tol=b) and math.isclose(R, 0, rel_tol=b):
+            onezero += 1
+        elif math.isclose(G, 1, rel_tol=b) and math.isclose(R, 0.3333333333333333, rel_tol=b):
+            onethird += 1
+        elif math.isclose(G, 1, rel_tol=b) and math.isclose(R, 1, rel_tol=b):
+            oneone += 1
+        elif math.isclose(G, 0.3333333333333333, rel_tol=b) and math.isclose(R, -0.3333333333333333, rel_tol=b):
+            thirdminusthird += 1
+        elif math.isclose(G, 0.3333333333333333, rel_tol=b) and math.isclose(R, 0, rel_tol=b):
+            thirdzero += 1
+        elif math.isclose(G, 0.3333333333333333, rel_tol=b) and math.isclose(R, 0.3333333333333333, rel_tol=b):
+            thirdthird += 1
+        elif math.isclose(G, 0.3333333333333333, rel_tol=b) and math.isclose(R, 1, rel_tol=b):
+            thirdone += 1
+        elif math.isclose(G, 0, rel_tol=b) and math.isclose(R, -0.3333333333333333, rel_tol=b):
+            zerominusthird += 1
+        elif math.isclose(G, 0, rel_tol=b) and math.isclose(R, 0, rel_tol=b):
+            zerozero += 1
+        elif math.isclose(G, 0, rel_tol=b) and math.isclose(R, 0.3333333333333333, rel_tol=b):
+            zerothird += 1
+        elif math.isclose(G, 0, rel_tol=b) and math.isclose(R, 1, rel_tol=b):
+            zeroone += 1
+        else:
+            print("uh oh! something has gone wrong. The gadget is not supposed to return this value")
+            print(G)
+            print(R)
+
+results = np.array([[oneminusthird, onezero, onethird, oneone],[thirdminusthird, thirdzero, thirdthird, thirdone],[zerominusthird, zerozero, zerothird, zeroone]])
+print(results)
